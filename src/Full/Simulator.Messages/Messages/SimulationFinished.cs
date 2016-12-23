@@ -8,11 +8,11 @@ namespace Simulator.Messages.Messages
         {
             
         }
-        public SimulationFinished(Guid projId)
+        public SimulationFinished(Guid projectId)
         {
-            ProjId = projId;
+            ProjectId = projectId;
         }
 
-        public Guid ProjId { get; set; }
+        public Guid ProjectId { get; set; }
     }
 }

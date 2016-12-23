@@ -92,7 +92,6 @@
     <Compile Include="System\ISystemActors.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Actors\ScolSimulationActor.cs" />
     <Compile Include="System\SystemActors.cs" />
   </ItemGroup>
   <ItemGroup>

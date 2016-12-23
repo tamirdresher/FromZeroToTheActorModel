@@ -79,7 +79,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actors\TechACoordinator.cs" />
+    <Compile Include="Simulation\Simulation.cs" />
+    <Compile Include="Actors\TechASimulationActor.cs" />
+    <Compile Include="Actors\TechACoordinatorActor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

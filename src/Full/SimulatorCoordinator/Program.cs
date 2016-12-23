@@ -12,7 +12,7 @@ namespace Simulator.Coordinator
             {
                 var firstProj = Guid.NewGuid();
                 var secondProj   = Guid.NewGuid();
-                var notifierProps = Props.Create(() => new SImulationNotifierActor());
+                var notifierProps = Props.Create(() => new SimulationNotifierActor());
 
                 var systemActors = new SystemActors(actorSystem)
                 {

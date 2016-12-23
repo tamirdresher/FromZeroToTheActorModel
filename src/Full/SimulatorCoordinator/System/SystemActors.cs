@@ -16,7 +16,7 @@ namespace Simulator.Coordinator
         public IEnumerable<ActorSelection> TechnologyCoordinators =>
             new[]
             {
-                _system.ActorSelection(ConfigurationManager.AppSettings["TechASystem"] + "/user/coordinator")
+                _system.ActorSelection(ConfigurationManager.AppSettings["TechnologyA_System"] + "/user/coordinator")
             };
 
         public IActorRef SimulationNotifier { get; set; }

@@ -12,7 +12,7 @@ namespace Simulator.Coordinator.Actors
     public class SimulationQueueActor : ReceiveActor
     {
         private readonly ISystemActors _systemActors;
-        List<SimulationItem> _simulaitonQueue = new List<SimulationItem>();
+        List<SimulationItem> _simulationQueue = new List<SimulationItem>();
         public SimulationQueueActor(ISystemActors systemActors)
         {
             _systemActors = systemActors;
@@ -30,18 +30,19 @@ namespace Simulator.Coordinator.Actors
             Receive<GetQueue>(_ => GetQueue());
             Receive<GetNextPending>(_ => GetNextPending());
             Receive<MoveToStopped>(toStop => MoveToStopped(toStop));
+            Receive<MoveToCompleted>(toComplete => MoveToCompleted(toComplete));
         }
 
         private void MoveToStopped(MoveToStopped toStop)
         {
-            var simulation = _simulaitonQueue.FirstOrDefault(s => s.ProjectId == toStop.ProjectId);
+            var simulation = _simulationQueue.FirstOrDefault(s => s.ProjectId == toStop.ProjectId);
             if (simulation == null)
             {
                 Sender.Tell(new SimulationNotFound() { ProjId = toStop.ProjectId });
                 return;
             }
 
-            _simulaitonQueue.Remove(simulation);
+            _simulationQueue.Remove(simulation);
             var simulationStateChanged = new SimulationStateChanged()
             {
                 ProjectId = toStop.ProjectId,
@@ -53,11 +54,11 @@ namespace Simulator.Coordinator.Actors
         private void GetNextPending()
         {
             var pendingSimulation =
-                _simulaitonQueue.FirstOrDefault(x => x.SimulationState == SimulationState.Running) ??
-                _simulaitonQueue.FirstOrDefault(x => x.SimulationState == SimulationState.WaitingToStop) ??
-                _simulaitonQueue.FirstOrDefault(x => x.SimulationState == SimulationState.WaitingToPause) ??
-                _simulaitonQueue.FirstOrDefault(x => x.SimulationState == SimulationState.WaitingToResume) ??
-                _simulaitonQueue.FirstOrDefault(x => x.SimulationState == SimulationState.Waiting);
+                _simulationQueue.FirstOrDefault(x => x.SimulationState == SimulationState.Running) ??
+                _simulationQueue.FirstOrDefault(x => x.SimulationState == SimulationState.WaitingToStop) ??
+                _simulationQueue.FirstOrDefault(x => x.SimulationState == SimulationState.WaitingToPause) ??
+                _simulationQueue.FirstOrDefault(x => x.SimulationState == SimulationState.WaitingToResume) ??
+                _simulationQueue.FirstOrDefault(x => x.SimulationState == SimulationState.Waiting);
 
             if (pendingSimulation != null)
             {
@@ -78,7 +79,7 @@ namespace Simulator.Coordinator.Actors
             Sender.Tell(new SimulationQueueEntries()
             {
                 Entries =
-                    _simulaitonQueue.Select(
+                    _simulationQueue.Select(
                         x =>
                             new QueueEntry()
                             {
@@ -90,7 +91,7 @@ namespace Simulator.Coordinator.Actors
         }
         private void MoveToRunning(MoveToRunning sim)
         {
-            var simulation = _simulaitonQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
+            var simulation = _simulationQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
             if (simulation == null)
             {
                 Context.Sender.Tell(new SimulationNotFound { ProjId = sim.ProjectId });
@@ -109,7 +110,7 @@ namespace Simulator.Coordinator.Actors
         }
         private void MoveToResume(MoveToResume sim)
         {
-            var simulation = _simulaitonQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
+            var simulation = _simulationQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
             if (simulation == null)
             {
                 sim.OriginalSender.Tell(new SimulationNotFound() { ProjId = sim.ProjectId });
@@ -140,7 +141,7 @@ namespace Simulator.Coordinator.Actors
         }
         private void MoveToStopping(MoveToStopping sim)
         {
-            var simulation = _simulaitonQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
+            var simulation = _simulationQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
             if (simulation == null)
             {
                 sim.OriginalSender.Tell(new SimulationNotFound() { ProjId = sim.ProjectId });
@@ -160,7 +161,7 @@ namespace Simulator.Coordinator.Actors
 
             if (simulation.SimulationState == SimulationState.Waiting)
             {
-                _simulaitonQueue.Remove(simulation);
+                _simulationQueue.Remove(simulation);
                 var simulationStateChangedToStopped = new SimulationStateChanged()
                 {
                     ProjectId = sim.ProjectId,
@@ -184,7 +185,7 @@ namespace Simulator.Coordinator.Actors
         }
         private void MoveToPaused(MoveToPaused sim)
         {
-            var simulation = _simulaitonQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
+            var simulation = _simulationQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
             if (simulation == null)
             {
                 sim.OriginalSender.Tell(new SimulationNotFound() { ProjId = sim.ProjectId });
@@ -213,7 +214,7 @@ namespace Simulator.Coordinator.Actors
         }
         private void MoveToPausing(MoveToPausing sim)
         {
-            var simulation = _simulaitonQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
+            var simulation = _simulationQueue.FirstOrDefault(s => s.ProjectId == sim.ProjectId);
             if (simulation == null)
             {
                 sim.OriginalSender.Tell(new SimulationNotFound() { ProjId = sim.ProjectId });
@@ -247,15 +248,34 @@ namespace Simulator.Coordinator.Actors
 
             NotifyAll(simulationStateChanged, sim.OriginalSender, Context.Parent);
         }
+        private void MoveToCompleted(MoveToCompleted toComplete)
+        {
+            var simulation = _simulationQueue.FirstOrDefault(s => s.ProjectId == toComplete.ProjectId);
+            if (simulation == null)
+            {
+                Sender.Tell(new SimulationNotFound() { ProjId = toComplete.ProjectId });
+                return;
+            }
+
+            _simulationQueue.Remove(simulation);
+            var simulationStateChanged = new SimulationStateChanged()
+            {
+                ProjectId = toComplete.ProjectId,
+                SimulationState = SimulationState.Completed,
+                Technology = simulation.Technology
+            };
+            NotifyAll(simulationStateChanged, Context.Parent);
+        }
+
         private void AddNewSimulation(AddNewSimulation sim)
         {
-            if (_simulaitonQueue.Any(s => s.ProjectId == sim.ProjId))
+            if (_simulationQueue.Any(s => s.ProjectId == sim.ProjId))
             {
                 sim.OriginalSender.Tell(new SimulationAlreadyRunning { ProjId = sim.ProjId });
                 return;
             }
 
-            _simulaitonQueue.Add(new SimulationItem
+            _simulationQueue.Add(new SimulationItem
             {
                 ProjectId = sim.ProjId,
                 Technology = sim.Technology,

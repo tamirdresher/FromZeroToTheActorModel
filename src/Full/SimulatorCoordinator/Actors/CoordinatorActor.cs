@@ -98,7 +98,11 @@ namespace Simulator.Coordinator.Actors
                             }
                     }
                 });
-
+            Receive<SimulationFinished>(m => m.ProjectId == _currentlySimulating,
+                m =>
+                {
+                    _queue.Tell(new MoveToCompleted { OriginalSender = Sender, ProjectId = m.ProjectId });
+                });
         }
 
         private void ReceiveExternalRequests()
@@ -124,8 +128,6 @@ namespace Simulator.Coordinator.Actors
             Context.GetLogger().Info($"Coordinator - Starting simulation of {m.ProjectId}");
             _queue.Tell(new AddNewSimulation() { OriginalSender = Sender, ProjId = m.ProjectId, Technology = m.Technology });
         }
-
-
         protected override void PreStart()
         {
             base.PreStart();

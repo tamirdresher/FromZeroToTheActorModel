@@ -12,7 +12,7 @@ namespace Simulator.TechnologyA
         {
             using (_scolActorSystem = ActorSystem.Create("TechnologyA"))
             {
-                _techACoordinator = _scolActorSystem.ActorOf(Props.Create(() => new TechACoordinator()), "coordinator");
+                _techACoordinator = _scolActorSystem.ActorOf(Props.Create(() => new TechACoordinatorActor()), "coordinator");
 
                 _scolActorSystem.WhenTerminated.Wait();
             }

@@ -5,15 +5,15 @@ using Simulator.Messages.Messages.SimulationQueue;
 
 namespace Simulator.Coordinator.Actors
 {
-    class SImulationNotifierActor:ReceiveActor
+    class SimulationNotifierActor:ReceiveActor
     {
         private IHubProxy _simulationNotificationHub;
 
-        public SImulationNotifierActor()
+        public SimulationNotifierActor()
         {
             var hubConnection = new HubConnection("http://localhost:8083/signalr");
             _simulationNotificationHub = hubConnection.CreateHubProxy("SimulationNotificationHub");
-            hubConnection.Start().Wait();
+            hubConnection.Start().Wait(1000);
             Become(Listening);
         }
 

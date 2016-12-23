@@ -60,6 +60,7 @@
     <Compile Include="Messages\Errors\SimulationAlreadyRunning.cs" />
     <Compile Include="Messages\Errors\SimulationNotFound.cs" />
     <Compile Include="Messages\IProjectSimulationMessage.cs" />
+    <Compile Include="Messages\ITechnologyAwareMessage.cs" />
     <Compile Include="Messages\PauseSimulation.cs" />
     <Compile Include="Messages\ResumeSimulation.cs" />
     <Compile Include="Messages\SimulationFinished.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Messages\SimulationQueue\AddNewSimulation.cs" />
     <Compile Include="Messages\SimulationQueue\GetNextPending.cs" />
     <Compile Include="Messages\SimulationQueue\GetQueue.cs" />
+    <Compile Include="Messages\SimulationQueue\MoveToCompleted.cs" />
     <Compile Include="Messages\SimulationQueue\MoveToPaused.cs" />
     <Compile Include="Messages\SimulationQueue\MoveToPausing.cs" />
     <Compile Include="Messages\SimulationQueue\MoveToResume.cs" />
