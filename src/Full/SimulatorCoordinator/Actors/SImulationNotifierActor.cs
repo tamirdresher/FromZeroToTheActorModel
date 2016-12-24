@@ -2,27 +2,32 @@
 using Akka.Event;
 using Microsoft.AspNet.SignalR.Client;
 using Simulator.Messages.Messages.SimulationQueue;
+using System;
 
 namespace Simulator.Coordinator.Actors
 {
     class SimulationNotifierActor:ReceiveActor
     {
-        private IHubProxy _simulationNotificationHub;
+        private Lazy<IHubProxy> _simulationNotificationHub;
 
         public SimulationNotifierActor()
         {
-            var hubConnection = new HubConnection("http://localhost:8083/signalr");
-            _simulationNotificationHub = hubConnection.CreateHubProxy("SimulationNotificationHub");
-            hubConnection.Start().Wait(1000);
+            _simulationNotificationHub = new Lazy<IHubProxy>(() =>
+            {
+                var hubConnection = new HubConnection("http://localhost:8083/signalr");
+                var simulationNotificationHub = hubConnection.CreateHubProxy("SimulationNotificationHub");
+                hubConnection.Start().Wait();
+                return simulationNotificationHub;
+            });
             Become(Listening);
         }
-
+        IHubProxy SimulationNotificationHub => _simulationNotificationHub.Value;
         private void Listening()
         {
             Receive<SimulationStateChanged>(m =>
             {
                 Context.GetLogger().Info($"Simulation State Changed. ProjectId: {m.ProjectId}, State: {m.SimulationState}");
-                _simulationNotificationHub.Invoke("Notify",m);
+                SimulationNotificationHub.Invoke("Notify",m);
             });
             ReceiveAny(m =>
             {

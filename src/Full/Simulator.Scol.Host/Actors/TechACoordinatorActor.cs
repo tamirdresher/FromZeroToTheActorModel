@@ -22,7 +22,7 @@ namespace Simulator.TechnologyA.Actors
                 m =>
                 {
                     Context.GetLogger().Info($"Start Simulation {m.ProjectId}");
-                    _currentSimulation = CreateSimulation(m);
+                    _currentSimulation = GetOrCreateSimulation(m);
                     _currentSimulation.Actor.Tell(m);
                     Become(Simulating);
                 });
@@ -61,7 +61,7 @@ namespace Simulator.TechnologyA.Actors
                     else
                     {
                         StopRunningSimulation(new StopSimulation { ProjectId = _currentSimulation.ProjectId });
-                        _currentSimulation = CreateSimulation(m);
+                        _currentSimulation = GetOrCreateSimulation(m);
                         _currentSimulation.Actor.Tell(m);
                     }
                     Become(Simulating);
@@ -96,10 +96,15 @@ namespace Simulator.TechnologyA.Actors
             Console.WriteLine(Context.Self);
         }
 
-        private Simulation CreateSimulation(IProjectSimulationMessage m)
+        private Simulation GetOrCreateSimulation(IProjectSimulationMessage m)
         {
+            var simualtionActorName = m.ProjectId.ToString();
+            var simulationActor = Context.Child(simualtionActorName) != ActorRefs.Nobody ?
+                Context.Child(simualtionActorName) :
+                Context.ActorOf(Props.Create(() => new TechASimulationActor(m.ProjectId)), simualtionActorName);
+            
             return new Simulation(m.ProjectId,
-                Context.ActorOf(Props.Create(() => new TechASimulationActor(m.ProjectId)), m.ProjectId.ToString()),
+                simulationActor,
                 Sender);
         }
         private bool IsCurrentSimulation(IProjectSimulationMessage m)
