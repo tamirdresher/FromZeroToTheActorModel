@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Akka.TestKit;
 using FakeItEasy;
+using Simulator.Coordinator;
 using Simulator.Coordinator.Actors;
 using Simulator.Messages.Messages;
 using Simulator.Messages.Messages.SimulationQueue;

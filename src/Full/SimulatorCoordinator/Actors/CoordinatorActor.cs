@@ -52,9 +52,26 @@ namespace Simulator.Coordinator.Actors
                         ProjectId = next.QueueEntry.ProjId,
                         Technology = next.QueueEntry.Technology
                     });
+                    if (next.QueueEntry.SimulationState == SimulationState.WaitingToStop)
+                    {
+                        tech.Tell(new StopSimulation{ProjectId = next.QueueEntry.ProjId});
+                    }
                 });
+
+            if (next.QueueEntry.SimulationState==SimulationState.WaitingToStop)
+            {
+                _queue.Tell(new MoveToStopped {ProjectId = next.QueueEntry.ProjId});
+            }
+            if (next.QueueEntry.SimulationState == SimulationState.WaitingToPause)
+            {
+                _queue.Tell(new MoveToPaused {ProjectId = next.QueueEntry.ProjId});
+            }
+            else
+            {
             _queue.Tell(new MoveToRunning { ProjectId = next.QueueEntry.ProjId });
-            
+
+            }
+
             ReceiveExternalRequests();
 
             Receive<SimulationStateChanged>(simState => simState.ProjectId == _currentlySimulating,

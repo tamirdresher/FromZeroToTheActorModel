@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator.Tests", "Simulato
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator.Messages", "Simulator.Messages\Simulator.Messages.csproj", "{678CB5A5-A2B6-40A3-B326-A6D19B97AB8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator.TechnologyA", "Simulator.Scol.Host\Simulator.TechnologyA.csproj", "{D11A25CF-3C03-4FF7-9C2F-AF2BE6B56D09}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator.TechnologyA", "Simulator.TechnologyA\Simulator.TechnologyA.csproj", "{D11A25CF-3C03-4FF7-9C2F-AF2BE6B56D09}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simulator.FrontEnd", "Simulator.FrontEnd\Simulator.FrontEnd.csproj", "{CD7FC767-06ED-4333-A39B-D7A3D34D0754}"
 EndProject

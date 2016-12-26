@@ -220,7 +220,8 @@ namespace Simulator.Coordinator.Actors
                 sim.OriginalSender.Tell(new SimulationNotFound() { ProjId = sim.ProjectId });
                 return;
             }
-            if (simulation.SimulationState == SimulationState.Waiting)
+            if (simulation.SimulationState == SimulationState.Waiting ||
+                simulation.SimulationState == SimulationState.WaitingToResume)
             {
                 simulation.SimulationState = SimulationState.Paused;
             }

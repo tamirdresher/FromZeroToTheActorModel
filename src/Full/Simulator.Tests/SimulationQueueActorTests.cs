@@ -5,6 +5,7 @@ using Akka.Actor;
 using Akka.TestKit;
 using Simulator.Messages;
 using FakeItEasy;
+using Simulator.Coordinator;
 using Simulator.Coordinator.Actors;
 using Simulator.Messages.Messages;
 using Simulator.Messages.Messages.Errors;
