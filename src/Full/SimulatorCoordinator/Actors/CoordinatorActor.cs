@@ -44,20 +44,16 @@ namespace Simulator.Coordinator.Actors
         private void Simulating(NextPending next)
         {
             _currentlySimulating = next.QueueEntry.ProjId;
-            _systemActors.TechnologyCoordinators.ForEach(
-                tech =>
-                {
-                    tech.Tell(new StartSimulation
-                    {
-                        ProjectId = next.QueueEntry.ProjId,
-                        Technology = next.QueueEntry.Technology
-                    });
-                    if (next.QueueEntry.SimulationState == SimulationState.WaitingToStop)
-                    {
-                        tech.Tell(new StopSimulation{ProjectId = next.QueueEntry.ProjId});
-                    }
-                });
-
+            _systemActors.TechnologyCoordinators.Tell(new StartSimulation
+            {
+                ProjectId = next.QueueEntry.ProjId,
+                Technology = next.QueueEntry.Technology
+            });
+            if (next.QueueEntry.SimulationState == SimulationState.WaitingToStop)
+            {
+                _systemActors.TechnologyCoordinators.Tell(new StopSimulation { ProjectId = next.QueueEntry.ProjId });
+            }
+            
             if (next.QueueEntry.SimulationState==SimulationState.WaitingToStop)
             {
                 _queue.Tell(new MoveToStopped {ProjectId = next.QueueEntry.ProjId});
@@ -91,7 +87,7 @@ namespace Simulator.Coordinator.Actors
                             {
                                 //in order to not be dependent on the technologies, we broadcast to all technologies.
                                 //the technology that this project belong to will react 
-                                _systemActors.TechnologyCoordinators.ForEach(tech => tech.Tell(new ResumeSimulation{ ProjectId = simState.ProjectId }));
+                                _systemActors.TechnologyCoordinators.Tell(new ResumeSimulation{ ProjectId = simState.ProjectId });
                                 _queue.Tell(new MoveToRunning { OriginalSender = Sender, ProjectId = simState.ProjectId });
                                 break;
 
@@ -100,7 +96,7 @@ namespace Simulator.Coordinator.Actors
                             {
                                 //in order to not be dependent on the technologies, we broadcast to all technologies.
                                 //the technology that this project belong to will react 
-                                _systemActors.TechnologyCoordinators.ForEach(tech=>tech.Tell(new StopSimulation { ProjectId = simState.ProjectId }));
+                                _systemActors.TechnologyCoordinators.Tell(new StopSimulation { ProjectId = simState.ProjectId });
                                 _queue.Tell(new MoveToStopped { OriginalSender = Sender, ProjectId = simState.ProjectId });
                                 break;
 
@@ -109,7 +105,7 @@ namespace Simulator.Coordinator.Actors
                             {
                                 //in order to not be dependent on the technologies, we broadcast to all technologies.
                                 //the technology that this project belong to will react 
-                                _systemActors.TechnologyCoordinators.ForEach(tech => tech.Tell(new PauseSimulation { ProjectId = simState.ProjectId }));
+                                _systemActors.TechnologyCoordinators.Tell(new PauseSimulation { ProjectId = simState.ProjectId });
                                 _queue.Tell(new MoveToPaused() { OriginalSender = Sender, ProjectId = simState.ProjectId });
                                 break;
                             }

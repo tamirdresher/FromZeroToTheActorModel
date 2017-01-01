@@ -6,6 +6,6 @@ namespace Simulator.Coordinator
     public interface ISystemActors
     {
         IActorRef SimulationNotifier { get; }
-        IEnumerable<ActorSelection> TechnologyCoordinators { get; }
+        IActorRef TechnologyCoordinators { get; }
     }
 }

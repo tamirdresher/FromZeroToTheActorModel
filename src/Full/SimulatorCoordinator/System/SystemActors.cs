@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using Akka.Actor;
+using Akka.Routing;
 
 namespace Simulator.Coordinator
 {
@@ -11,13 +12,11 @@ namespace Simulator.Coordinator
         public SystemActors(ActorSystem system)
         {
             _system = system;
+            TechnologyCoordinators= _system.ActorOf(Props.Empty.WithRouter(FromConfig.Instance), "Technologies");
+
         }
 
-        public IEnumerable<ActorSelection> TechnologyCoordinators =>
-            new[]
-            {
-                _system.ActorSelection(ConfigurationManager.AppSettings["TechnologyA_System"] + "/user/coordinator")
-            };
+        public IActorRef TechnologyCoordinators { get; }
 
         public IActorRef SimulationNotifier { get; set; }
     }

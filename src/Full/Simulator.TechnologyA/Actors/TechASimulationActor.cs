@@ -71,6 +71,10 @@ namespace Simulator.Coordinator.Actors
             {
                 ResumeSimulation();
             });
+            Receive<StartSimulation>(m =>
+            {
+                ResumeSimulation();
+            });
         }
         private void StopSimulation()
         {
