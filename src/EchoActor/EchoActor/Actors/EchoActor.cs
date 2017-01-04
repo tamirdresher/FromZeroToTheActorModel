@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Akka.Event;
 
 namespace EchoActor.Actors
 {
@@ -14,6 +15,7 @@ namespace EchoActor.Actors
         {
             Receive<EchoMessage>(m => 
             {
+                Context.GetLogger().Info($"Got message {m.Message}");
                 Sender.Tell(m);
             });
         }

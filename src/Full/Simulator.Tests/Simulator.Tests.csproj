@@ -118,7 +118,6 @@
     <Compile Include="CoordinatorTests.cs" />
     <Compile Include="SimulationQueueActorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestDependencyResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
