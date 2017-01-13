@@ -21,24 +21,7 @@ namespace Simulator.Coordinator
                 
                 var props = Props.Create(() => new CoordinatorActor(systemActors));
                 var coordinatorActor = actorSystem.ActorOf(props,"SimulationCoordinator");
-                //coordinatorActor.Tell(new StartSimulation {Technology = Technology.SCOL, ProjectId = firstProj}, systemActors.SimulationNotifier);
-                //Thread.Sleep(5000);
-                //coordinatorActor.Tell(new PauseSimulation{ ProjectId = firstProj }, systemActors.SimulationNotifier);
-                //Thread.Sleep(5000);
-                //coordinatorActor.Tell(new ResumeSimulation{ ProjectId = firstProj }, systemActors.SimulationNotifier);
-                //Thread.Sleep(5000);
-                //coordinatorActor.Tell(new PauseSimulation { ProjectId = firstProj }, systemActors.SimulationNotifier);
-                //Thread.Sleep(5000);
-                //coordinatorActor.Tell(new StartSimulation { Technology = Technology.SCOL, ProjectId = secondProj }, systemActors.SimulationNotifier);
-                //Thread.Sleep(5000);
-                //coordinatorActor.Tell(new StopSimulation() { ProjectId = firstProj }, systemActors.SimulationNotifier);
-
-
-                //Thread.Sleep(5000);
-                //Console.WriteLine($"proj id {firstProj}");
-                //systemActors.TechnologyCoordinators.ForEach(c=>c.Tell(new StartSimulation { Technology = Technology.SCOL , ProjectId = firstProj}));
-
-
+               
                 actorSystem.WhenTerminated.Wait();
                 Console.ReadLine();
             }
@@ -46,9 +29,5 @@ namespace Simulator.Coordinator
 
     }
 
-    internal class RunningSimulationActor
-    {
-        public IActorRef ActorRef { get; set; }
-        public Guid ProjectId { get; set; }
-    }
+   
 }
