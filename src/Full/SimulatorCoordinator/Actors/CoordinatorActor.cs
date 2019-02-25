@@ -15,7 +15,7 @@ namespace Simulator.Coordinator.Actors
         private IActorRef _queue;
         Guid _currentlySimulating = Guid.Empty;
 
-       
+
         public CoordinatorActor(ISystemActors systemActors)
         {
             _systemActors = systemActors;
@@ -53,18 +53,18 @@ namespace Simulator.Coordinator.Actors
             {
                 _systemActors.TechnologyCoordinators.Tell(new StopSimulation { ProjectId = next.QueueEntry.ProjId });
             }
-            
-            if (next.QueueEntry.SimulationState==SimulationState.WaitingToStop)
+
+            if (next.QueueEntry.SimulationState == SimulationState.WaitingToStop)
             {
-                _queue.Tell(new MoveToStopped {ProjectId = next.QueueEntry.ProjId});
+                _queue.Tell(new MoveToStopped { ProjectId = next.QueueEntry.ProjId });
             }
             if (next.QueueEntry.SimulationState == SimulationState.WaitingToPause)
             {
-                _queue.Tell(new MoveToPaused {ProjectId = next.QueueEntry.ProjId});
+                _queue.Tell(new MoveToPaused { ProjectId = next.QueueEntry.ProjId });
             }
             else
             {
-            _queue.Tell(new MoveToRunning { ProjectId = next.QueueEntry.ProjId });
+                _queue.Tell(new MoveToRunning { ProjectId = next.QueueEntry.ProjId });
 
             }
 
@@ -87,7 +87,7 @@ namespace Simulator.Coordinator.Actors
                             {
                                 //in order to not be dependent on the technologies, we broadcast to all technologies.
                                 //the technology that this project belong to will react 
-                                _systemActors.TechnologyCoordinators.Tell(new ResumeSimulation{ ProjectId = simState.ProjectId });
+                                _systemActors.TechnologyCoordinators.Tell(new ResumeSimulation { ProjectId = simState.ProjectId });
                                 _queue.Tell(new MoveToRunning { OriginalSender = Sender, ProjectId = simState.ProjectId });
                                 break;
 
@@ -120,7 +120,7 @@ namespace Simulator.Coordinator.Actors
 
         private void ReceiveExternalRequests()
         {
-            Receive<GetQueue>(getQueue => { Context.GetLogger().Info("GetQueue sender:"+Sender); _queue.Forward(getQueue); });
+            Receive<GetQueue>(getQueue => { Context.GetLogger().Info("GetQueue sender:" + Sender); _queue.Forward(getQueue); });
             Receive<StartSimulation>(m => { Context.GetLogger().Info("StartSimulation sender:" + Sender); AddSimulation(m); });
             Receive<StopSimulation>(stop =>
             {
