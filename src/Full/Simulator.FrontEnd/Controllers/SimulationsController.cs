@@ -18,7 +18,10 @@ namespace Simulator.FrontEnd.Controllers
         
         public async Task<IActionResult> Index()
         {
-            var queue=await ActorSystemRefs.Coordinator.Ask<SimulationQueueEntries>(new GetQueue(),TimeSpan.FromSeconds(10));
+            var coActorSelection = ActorSystemRefs.ActorSystem.ActorSelection("akka.tcp://simulator@localhost:8097/user/SimulationCoordinator");
+            coActorSelection.Tell(new GetQueue());
+
+            var queue =await ActorSystemRefs.Coordinator.Ask<SimulationQueueEntries>(new GetQueue(),TimeSpan.FromSeconds(10));
             return View(queue.Entries.Select(e => new Simulation
                 {
                     ProjectId = e.ProjId,

@@ -1,6 +1,8 @@
 ﻿using System;
 using Akka.Actor;
 using Simulator.Coordinator.Actors;
+using Simulator.Messages.Messages;
+using Simulator.Messages.Messages.SimulationQueue;
 
 namespace Simulator.Coordinator
 {
@@ -21,7 +23,10 @@ namespace Simulator.Coordinator
                 
                 var props = Props.Create(() => new CoordinatorActor(systemActors));
                 var coordinatorActor = actorSystem.ActorOf(props,"SimulationCoordinator");
-               
+
+                var coActorSelection = actorSystem.ActorSelection("akka.tcp://TechnologyA@localhost:8091/user/coordinator");
+                coActorSelection.Tell(new StartSimulation());
+
                 actorSystem.WhenTerminated.Wait();
                 Console.ReadLine();
             }

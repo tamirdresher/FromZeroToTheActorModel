@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Simulator.Infrastructure;
 
 namespace Simulator.FrontEnd
 {
@@ -22,7 +23,9 @@ namespace Simulator.FrontEnd
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
 
-            ActorSystemRefs.ActorSystem = ActorSystem.Create("Frontend");
+            var config = HoconLoader.ParseConfig("akka.hocon");
+
+            ActorSystemRefs.ActorSystem = ActorSystem.Create("Frontend", config);
             ActorSystemRefs.Coordinator =
                 ActorSystemRefs.ActorSystem.ActorSelection(Configuration.GetValue<string>("CoordinatorAddress"));
 
@@ -40,8 +43,8 @@ namespace Simulator.FrontEnd
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            //loggerFactory.AddDebug();
 
             if (env.IsDevelopment())
             {

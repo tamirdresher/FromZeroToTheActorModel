@@ -1,0 +1,12 @@
+﻿akka {
+  actor {
+    provider = "Akka.Remote.RemoteActorRefProvider, Akka.Remote"
+  }					
+	remote {				
+		dot-netty.tcp {
+			hostname = "localhost"
+			port = 8093
+		}
+	}            
+
+}
