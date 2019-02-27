@@ -14,8 +14,11 @@ namespace EchoActor
         {
             using (var sys = ActorSystem.Create("echo"))
             {
-                IActorRef echoActor=sys.ActorOf<Actors.EchoActor>("echoActor");
-                var msg=echoActor.Ask<EchoMessage>(new EchoMessage { Message = "Hello World" }).Result;
+                IActorRef echoActor = sys.ActorOf<Actors.EchoActor>("echoActor");
+
+               // echoActor.Tell(new EchoMessage() { Message = "Hello Odessa" });
+
+                var msg = echoActor.Ask<EchoMessage>(new EchoMessage { Message = "Hello World" }).Result;
                 Console.WriteLine(msg.Message);
                 sys.WhenTerminated.Wait();
             }

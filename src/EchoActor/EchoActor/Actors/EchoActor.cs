@@ -9,13 +9,13 @@ using Akka.Event;
 
 namespace EchoActor.Actors
 {
-    class EchoActor:ReceiveActor
+    class EchoActor : ReceiveActor
     {
         public EchoActor()
         {
             Receive<EchoMessage>(m => 
             {
-                Context.GetLogger().Info($"Got message {m.Message}");
+                Context.GetLogger().Info($"Got message '{m.Message}'");
                 Sender.Tell(m);
             });
         }
